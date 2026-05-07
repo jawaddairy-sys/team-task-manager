@@ -145,6 +145,15 @@ export default function DashboardPage() {
     fetchTasks();
   };
 
+  // Update team in state after edit
+  const handleUpdateTeam = (updatedTeam) => {
+    setTeams((prev) =>
+      prev.map((t) => (t.id === updatedTeam.id ? { ...t, ...updatedTeam } : t)),
+    );
+    if (selectedTeam?.id === updatedTeam.id)
+      setSelectedTeam((prev) => ({ ...prev, ...updatedTeam }));
+  };
+
   // Delete task
   const handleDeleteTask = async (taskId) => {
     if (!confirm("Delete this task?")) return;
@@ -298,6 +307,7 @@ export default function DashboardPage() {
                     team={team}
                     onSelect={setSelectedTeam}
                     onDelete={handleDeleteTeam}
+                    onUpdate={handleUpdateTeam}
                     selected={selectedTeam?.id === team.id}
                   />
                 ))}

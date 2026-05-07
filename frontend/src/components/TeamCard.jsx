@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import axiosInstance from "../api/axiosInstance";
 
 const COLORS = [
   "bg-violet-500",
@@ -9,11 +11,114 @@ const COLORS = [
   "bg-cyan-500",
 ];
 
-export default function TeamCard({ team, onSelect, onDelete, selected }) {
+export default function TeamCard({
+  team,
+  onSelect,
+  onDelete,
+  onUpdate,
+  selected,
+}) {
   const { user } = useAuth();
   const color = COLORS[team.id % COLORS.length];
-  const isCreator = team.creator_id === user?.id;
 
+  // ✅ FIX: Convert both to string for comparison
+  const isCreator = String(team.creator_id) === String(user?.id);
+
+  // 🔍 Debug: Remove after confirming it works
+  console.log("Creator check:", {
+    team_creator_id: team.creator_id,
+    team_creator_type: typeof team.creator_id,
+    user_id: user?.id,
+    user_id_type: typeof user?.id,
+    isCreator,
+    user_object: user,
+  });
+
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState({
+    name: team.name,
+    description: team.description || "",
+  });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    setForm({ name: team.name, description: team.description || "" });
+    setError("");
+    setEditing(true);
+  };
+
+  const handleCancel = (e) => {
+    e.stopPropagation();
+    setEditing(false);
+    setError("");
+  };
+
+  const handleSave = async (e) => {
+    e.stopPropagation();
+    if (!form.name.trim()) return setError("Name is required");
+    setSaving(true);
+    setError("");
+    try {
+      const res = await axiosInstance.put(`/teams/${team.id}`, {
+        name: form.name.trim(),
+        description: form.description.trim() || null,
+      });
+      onUpdate?.(res.data.team || { ...team, ...form });
+      setEditing(false);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Edit mode
+  if (editing) {
+    return (
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-zinc-900 border border-violet-500 ring-1 ring-violet-500/30 rounded-xl p-4"
+      >
+        <div className={`w-full h-1 rounded-full ${color} mb-3 opacity-80`} />
+        <div className="space-y-2">
+          <input
+            autoFocus
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            placeholder="Team name"
+            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-violet-500 transition"
+          />
+          <textarea
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            placeholder="Description (optional)"
+            rows={2}
+            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-violet-500 transition resize-none"
+          />
+          {error && <p className="text-red-400 text-xs">{error}</p>}
+          <div className="flex gap-2 pt-1">
+            <button
+              onClick={handleCancel}
+              className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-medium py-1.5 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex-1 bg-violet-600 hover:bg-violet-500 disabled:bg-violet-800 text-white text-xs font-medium py-1.5 rounded-lg transition-colors"
+            >
+              {saving ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Normal mode
   return (
     <div
       onClick={() => onSelect(team)}
@@ -23,7 +128,6 @@ export default function TeamCard({ team, onSelect, onDelete, selected }) {
           : "border-zinc-800"
       }`}
     >
-      {/* Color strip */}
       <div className={`w-full h-1 rounded-full ${color} mb-3 opacity-80`} />
 
       <div className="flex items-start justify-between gap-2">
@@ -38,30 +142,52 @@ export default function TeamCard({ team, onSelect, onDelete, selected }) {
           )}
         </div>
 
-        {isCreator && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(team.id);
-            }}
-            className="text-zinc-600 hover:text-red-400 transition-colors shrink-0 p-0.5"
-            title="Delete team"
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        {/* ✅ Always show buttons for debugging - then conditionally */}
+        {isCreator ? (
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              onClick={handleEditClick}
+              className="text-zinc-500 hover:text-violet-400 transition-colors p-0.5"
+              title="Edit team"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              />
-            </svg>
-          </button>
-        )}
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(team.id);
+              }}
+              className="text-zinc-500 hover:text-red-400 transition-colors p-0.5"
+              title="Delete team"
+            >
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <div className="flex items-center gap-1 mt-3">

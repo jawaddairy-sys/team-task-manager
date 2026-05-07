@@ -146,7 +146,7 @@ if (process.env.NODE_ENV === "production") {
     errorLog: console.error,
   });
 
-  console.log("✅ Using PostgreSQL session store (production mode)");
+  console.log(" Using PostgreSQL session store (production mode)");
 } else {
   // In development, we can still use PostgreSQL but with more logging
   if (process.env.DATABASE_URL) {
@@ -156,13 +156,13 @@ if (process.env.NODE_ENV === "production") {
       createTableIfMissing: true,
       ttl: 7 * 24 * 60 * 60,
     });
-    console.log("✅ Using PostgreSQL session store (development mode)");
+    console.log(" Using PostgreSQL session store (development mode)");
   } else {
     // Fallback to memory store (for development without database)
     const MemoryStore = (await import("express-session")).MemoryStore;
     sessionStore = new MemoryStore();
     console.log(
-      "⚠️  Using MemoryStore for sessions (not recommended for production)",
+      "Using MemoryStore for sessions (not recommended for production)",
     );
   }
 }
@@ -207,7 +207,7 @@ app.use(passport.session());
 
 if (process.env.NODE_ENV === "development") {
   app.use((req, res, next) => {
-    console.log(`📝 ${req.method} ${req.path} - Session ID: ${req.sessionID}`);
+    console.log(` ${req.method} ${req.path} - Session ID: ${req.sessionID}`);
     next();
   });
 }
