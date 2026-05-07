@@ -87,7 +87,19 @@ if (process.env.NODE_ENV === "production") {
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  origin: function (origin, callback) {
+    const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:5173"];
+    // Allow *.vercel.app subdomains
+    if (!origin) return callback(null, true);
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.match(/https:\/\/team-task-manager.*\.vercel\.app$/)
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: [
@@ -100,7 +112,6 @@ const corsOptions = {
   preflightContinue: false,
   optionsSuccessStatus: 204,
 };
-
 app.use(cors(corsOptions));
 
 // Body parsing with security limits
