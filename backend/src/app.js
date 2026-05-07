@@ -61,7 +61,8 @@ app.use(
         imgSrc: ["'self'", "data:", "https:"],
         connectSrc: [
           "'self'",
-          process.env.FRONTEND_URL || "http://localhost:3000",
+          process.env.FRONTEND_URL || "http://localhost:5173",
+          "https://*.vercel.app",
         ],
         fontSrc: ["'self'", "data:"],
         objectSrc: ["'none'"],
@@ -181,9 +182,9 @@ const sessionConfig = {
   name: "__session", // Custom cookie name for security
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    secure: true,
+    sameSite: "none", // "strict" → "none"
+    maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
     domain: process.env.COOKIE_DOMAIN || undefined,
   },
