@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 import pool from "../config/db.js";
 
-// Register a new user
 const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -24,9 +23,18 @@ const register = async (req, res) => {
       [name, email.toLowerCase(), passwordHash],
     );
 
-    return res
-      .status(201)
-      .json({ message: "Registered successfully", user: result.rows[0] });
+    const newUser = result.rows[0];
+
+    // ← YEH ADD KARO
+    req.login(newUser, (err) => {
+      if (err) {
+        return res.status(500).json({ message: "Auto login failed" });
+      }
+      return res.status(201).json({
+        message: "Registered successfully",
+        user: newUser,
+      });
+    });
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
   }
