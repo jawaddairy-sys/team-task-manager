@@ -317,7 +317,7 @@ VITE_API_URL=https://your-backend-url.com/api
 
 ## 👤 Author
 
-**Your Name**
+**Jawad Ahmad**
 - GitHub: [@jawaddairy-sys](https://github.com/jawaddairy-sys)
 - LinkedIn: [Jawad Ahmad](https://www.linkedin.com/in/jawad-ahmad-b8a072211)
 
@@ -326,5 +326,6 @@ VITE_API_URL=https://your-backend-url.com/api
 ## 📄 License
 
 MIT License — feel free to use this project.
-.  
+. 
+ 
  
