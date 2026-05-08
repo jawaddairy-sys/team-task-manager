@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import TeamCard from "../components/TeamCard";
 import TaskCard from "../components/TaskCard";
 import TaskModal from "../components/TaskModal";
+import TeamModal from "../components/TeamModal";
 import FilterBar from "../components/FilterBar";
 import TeamMembersPanel from "../components/TeamMembersPanel";
 
@@ -20,7 +21,7 @@ export default function DashboardPage() {
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [newTeamName, setNewTeamName] = useState("");
+  const [showTeamModal, setShowTeamModal] = useState(false);
   const [showTeamInput, setShowTeamInput] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(true);
   const [loadingTasks, setLoadingTasks] = useState(true);
@@ -90,16 +91,9 @@ export default function DashboardPage() {
   }, [selectedTeam]);
 
   // Create team
-  const handleCreateTeam = async () => {
-    if (!newTeamName.trim()) return;
-    try {
-      await axiosInstance.post("/teams", { name: newTeamName.trim() });
-      setNewTeamName("");
-      setShowTeamInput(false);
-      fetchTeams();
-    } catch (e) {
-      console.error(e);
-    }
+  const handleCreateTeam = async (data) => {
+    await axiosInstance.post("/teams", data);
+    fetchTeams();
   };
 
   // Delete team
@@ -246,33 +240,12 @@ export default function DashboardPage() {
                 Teams
               </h2>
               <button
-                onClick={() => setShowTeamInput(!showTeamInput)}
+                onClick={() => setShowTeamModal(true)}
                 className="text-violet-400 hover:text-violet-300 text-xs font-medium transition-colors"
               >
                 + New
               </button>
             </div>
-
-            {/* New team input */}
-            {showTeamInput && (
-              <div className="flex gap-2 mb-3">
-                <input
-                  type="text"
-                  value={newTeamName}
-                  onChange={(e) => setNewTeamName(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleCreateTeam()}
-                  placeholder="Team name"
-                  autoFocus
-                  className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-violet-500 transition"
-                />
-                <button
-                  onClick={handleCreateTeam}
-                  className="bg-violet-600 hover:bg-violet-500 text-white px-3 py-2 rounded-lg text-sm transition-colors"
-                >
-                  Add
-                </button>
-              </div>
-            )}
 
             {/* All tasks button */}
             <button
@@ -412,7 +385,16 @@ export default function DashboardPage() {
       </div>
       {/* end container */}
 
-      {/* Task Modal */}
+      {/* Left column mein se HATAO yeh block: */}
+      {showTeamModal && (
+        <TeamModal
+          isOpen={showTeamModal}
+          onClose={() => setShowTeamModal(false)}
+          onSubmit={handleCreateTeam}
+        />
+      )}
+
+      {/* Aur neeche TaskModal ke saath ADD karo: */}
       <TaskModal
         isOpen={modalOpen}
         onClose={() => {
@@ -423,6 +405,13 @@ export default function DashboardPage() {
         task={editingTask}
         teams={teams}
         members={members}
+      />
+
+      {/* ✅ Yeh naya line add karo: */}
+      <TeamModal
+        isOpen={showTeamModal}
+        onClose={() => setShowTeamModal(false)}
+        onSubmit={handleCreateTeam}
       />
     </div>
   );

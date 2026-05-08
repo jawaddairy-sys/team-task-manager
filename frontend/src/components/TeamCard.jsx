@@ -21,18 +21,8 @@ export default function TeamCard({
   const { user } = useAuth();
   const color = COLORS[team.id % COLORS.length];
 
-  // ✅ FIX: Convert both to string for comparison
-  const isCreator = String(team.creator_id) === String(user?.id);
-
-  // 🔍 Debug: Remove after confirming it works
-  console.log("Creator check:", {
-    team_creator_id: team.creator_id,
-    team_creator_type: typeof team.creator_id,
-    user_id: user?.id,
-    user_id_type: typeof user?.id,
-    isCreator,
-    user_object: user,
-  });
+  // String compare karo — type mismatch fix
+  const isCreator = String(team.created_by) === String(user?.id);
 
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
@@ -65,7 +55,13 @@ export default function TeamCard({
         name: form.name.trim(),
         description: form.description.trim() || null,
       });
-      onUpdate?.(res.data.team || { ...team, ...form });
+      onUpdate?.(
+        res.data.team || {
+          ...team,
+          name: form.name,
+          description: form.description,
+        },
+      );
       setEditing(false);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update");
@@ -74,7 +70,7 @@ export default function TeamCard({
     }
   };
 
-  // Edit mode
+  // ── Edit mode ──
   if (editing) {
     return (
       <div
@@ -118,11 +114,11 @@ export default function TeamCard({
     );
   }
 
-  // Normal mode
+  // ── Normal mode ──
   return (
     <div
       onClick={() => onSelect(team)}
-      className={`relative bg-zinc-900 border rounded-xl p-4 cursor-pointer transition-all hover:border-violet-500/50 hover:shadow-lg hover:shadow-violet-500/5 ${
+      className={`relative bg-zinc-900 border rounded-xl p-4 cursor-pointer transition-all hover:border-violet-500/50 ${
         selected
           ? "border-violet-500 ring-1 ring-violet-500/30"
           : "border-zinc-800"
@@ -135,19 +131,17 @@ export default function TeamCard({
           <h3 className="text-white font-medium text-sm truncate">
             {team.name}
           </h3>
-          {team.description && (
-            <p className="text-zinc-500 text-xs mt-0.5 line-clamp-2">
-              {team.description}
-            </p>
-          )}
+          <p className="text-zinc-500 text-xs mt-0.5 line-clamp-2">
+            {team.description}
+          </p>
         </div>
 
-        {/* ✅ Always show buttons for debugging - then conditionally */}
+        {/* Always visible — no hover needed */}
         {isCreator ? (
           <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={handleEditClick}
-              className="text-zinc-500 hover:text-violet-400 transition-colors p-0.5"
+              className="text-zinc-400 hover:text-violet-400 transition-colors p-1 rounded-md hover:bg-zinc-800"
               title="Edit team"
             >
               <svg
@@ -169,7 +163,7 @@ export default function TeamCard({
                 e.stopPropagation();
                 onDelete(team.id);
               }}
-              className="text-zinc-500 hover:text-red-400 transition-colors p-0.5"
+              className="text-zinc-400 hover:text-red-400 transition-colors p-1 rounded-md hover:bg-zinc-800"
               title="Delete team"
             >
               <svg
@@ -187,7 +181,12 @@ export default function TeamCard({
               </svg>
             </button>
           </div>
-        ) : null}
+        ) : (
+          // Debug: show creator info temporarily
+          <span className="text-zinc-700 text-[10px]">
+            {team.creator_id}/{user?.id}
+          </span>
+        )}
       </div>
 
       <div className="flex items-center gap-1 mt-3">

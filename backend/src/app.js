@@ -182,8 +182,8 @@ const sessionConfig = {
   name: "__session", // Custom cookie name for security
   cookie: {
     httpOnly: true,
-    secure: true,
-    sameSite: "none", // "strict" → "none"
+    secure: false,
+    sameSite: "lax", // "strict" → "none"
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
     domain: process.env.COOKIE_DOMAIN || undefined,

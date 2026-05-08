@@ -3,7 +3,7 @@ import pool from "../config/db.js";
 // Create a new team
 const createTeam = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, description } = req.body;
     const userId = req.user.id;
 
     // Validate input
@@ -27,10 +27,10 @@ const createTeam = async (req, res) => {
 
       // Insert the team
       const teamResult = await client.query(
-        `INSERT INTO teams (name, created_by) 
-         VALUES ($1, $2) 
+        `INSERT INTO teams (name, description, created_by) 
+         VALUES ($1, $2, $3) 
          RETURNING *`,
-        [name.trim(), userId],
+        [name.trim(), description.trim(), userId],
       );
 
       const team = teamResult.rows[0];
@@ -79,6 +79,7 @@ const getMyTeams = async (req, res) => {
       `SELECT 
         t.id, 
         t.name, 
+        t.description,  
         t.created_by, 
         t.created_at,
         tm.role,
@@ -87,7 +88,7 @@ const getMyTeams = async (req, res) => {
        JOIN team_members tm ON t.id = tm.team_id
        LEFT JOIN team_members tm2 ON t.id = tm2.team_id
        WHERE tm.user_id = $1
-       GROUP BY t.id, t.name, t.created_by, t.created_at, tm.role
+       GROUP BY t.id, t.name, t.description, t.created_by, t.created_at, tm.role
        ORDER BY t.created_at DESC`,
       [userId],
     );
@@ -138,6 +139,7 @@ const getTeamById = async (req, res) => {
       `SELECT 
         t.*, 
         u.name as creator_name,
+        u.description as creator_description,
         u.email as creator_email
        FROM teams t
        LEFT JOIN users u ON t.created_by = u.id
@@ -158,6 +160,7 @@ const getTeamById = async (req, res) => {
       `SELECT 
         u.id,
         u.name,
+        u.description as description,
         u.email,
         tm.role,
         tm.joined_at
@@ -322,7 +325,7 @@ const deleteTeam = async (req, res) => {
   }
 };
 
-// Optional: Update team details
+//  Update team details
 const updateTeam = async (req, res) => {
   try {
     const teamId = parseInt(req.params.id);
@@ -400,7 +403,7 @@ const updateTeam = async (req, res) => {
   }
 };
 
-// Optional: Remove member from team
+// Remove member from team
 const removeMember = async (req, res) => {
   try {
     const teamId = parseInt(req.params.id);
@@ -485,7 +488,7 @@ const removeMember = async (req, res) => {
   }
 };
 
-// Optional: Update member role
+// Update member role
 const updateMemberRole = async (req, res) => {
   try {
     const teamId = parseInt(req.params.id);
