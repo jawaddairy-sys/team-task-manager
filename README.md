@@ -326,3 +326,5 @@ VITE_API_URL=https://your-backend-url.com/api
 ## 📄 License
 
 MIT License — feel free to use this project.
+.  
+ 
