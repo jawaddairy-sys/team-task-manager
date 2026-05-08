@@ -190,7 +190,7 @@ const sessionConfig = {
     sameSite: "none", // "strict" → "none"
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
-    domain: process.env.COOKIE_DOMAIN || undefined,
+    domain: undefined,
   },
   rolling: true, // Reset cookie expiration on each request
   proxy: process.env.NODE_ENV === "production",

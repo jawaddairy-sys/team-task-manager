@@ -1,5 +1,8 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "https://team-task-manager-production-0e0e.up.railway.app/api/:path*"
+        }
+    ]
 }
