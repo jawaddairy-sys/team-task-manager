@@ -319,7 +319,7 @@ VITE_API_URL=https://your-backend-url.com/api
 
 **Your Name**
 - GitHub: [@jawaddairy-sys](https://github.com/jawaddairy-sys)
-- LinkedIn: [jawad-ahmad]([https://linkedin.com/in/your-linkedin](https://www.linkedin.com/in/jawad-ahmad-b8a072211?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app))
+- LinkedIn: [Jawad Ahmad](https://www.linkedin.com/in/jawad-ahmad-b8a072211)
 
 ---
 
