@@ -89,7 +89,11 @@ if (process.env.NODE_ENV === "production") {
 // CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:5173"];
+    const allowedOrigins = [
+      process.env.FRONTEND_URL,
+      "http://localhost:5173",
+      "https://team-task-manager-six-gilt.vercel.app",
+    ];
     // Allow *.vercel.app subdomains
     if (!origin) return callback(null, true);
     if (
