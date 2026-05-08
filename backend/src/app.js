@@ -205,7 +205,7 @@ app.use(passport.session());
 // Request Logging Middleware (Development only)
 // ==============================================
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV !== "production") {
   app.use((req, res, next) => {
     console.log(` ${req.method} ${req.path} - Session ID: ${req.sessionID}`);
     next();
