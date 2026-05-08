@@ -7,7 +7,7 @@ A full-stack web application for managing teams and tasks collaboratively. Built
 ## 🚀 Live Demo
 
 - **Frontend:** [team-task-manager.vercel.app](https://team-task-manager-six-gilt.vercel.app/)
-- **Backend API:** [your-backend-url.com](https://team-task-manager-production-0e0e.up.railway.app)
+- **Backend API:** [team-task-manager-railway.app](https://team-task-manager-production-0e0e.up.railway.app)
 
 ---
 
@@ -78,25 +78,25 @@ team-task-manager/
 │   └── server.js                  # Entry point
 │
 └── frontend/
-    ├── src/
-    │   ├── api/
-    │   │   └── axiosInstance.js   # Axios base config
-    │   ├── components/
-    │   │   ├── Navbar.jsx
-    │   │   ├── TaskCard.jsx
-    │   │   ├── TaskModal.jsx
-    │   │   ├── TeamCard.jsx
-    │   │   └── FilterBar.jsx
-    │   ├── pages/
-    │   │   ├── LoginPage.jsx
-    │   │   ├── RegisterPage.jsx
-    │   │   └── DashboardPage.jsx
-    │   ├── context/
-    │   │   └── AuthContext.jsx    # Global auth state
-    │   ├── App.jsx                # Routes
-    │   └── main.jsx
-    ├── vercel.json                # SPA routing config
-    └── vite.config.js
+|    │   │   └── axiosInstance.js   # Axios base config
+|    │   ├── components/
+|    │   │   ├── Navbar.jsx
+|    │   │   ├── TaskCard.jsx
+|    │   │   ├── TaskModal.jsx
+|    │   │   ├── TeamCard.jsx
+|    │   │   └── FilterBar.jsx
+|    │   ├── pages/
+|    │   │   ├── LoginPage.jsx
+|    │   │   ├── RegisterPage.jsx
+|    │   │   └── DashboardPage.jsx
+|    │   ├── context/
+|    │   │   └── AuthContext.jsx    # Global auth state
+|    │   ├── App.jsx                # Routes
+|    │   └── main.jsx
+|    ├── vercel.json                # SPA routing config
+|    └── vite.config.js
+│
+├── .gitignore
 ```
 
 ---
@@ -113,7 +113,7 @@ team-task-manager/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/team-task-manager.git
+git clone https://github.com/jawaddairy-sys/team-task-manager.git
 cd team-task-manager
 ```
 
@@ -319,7 +319,7 @@ VITE_API_URL=https://your-backend-url.com/api
 
 **Your Name**
 - GitHub: [@jawaddairy-sys](https://github.com/jawaddairy-sys)
-- LinkedIn: [your-linkedin](https://linkedin.com/in/your-linkedin)
+- LinkedIn: [jawad-ahmad]([https://linkedin.com/in/your-linkedin](https://www.linkedin.com/in/jawad-ahmad-b8a072211?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app))
 
 ---
 
