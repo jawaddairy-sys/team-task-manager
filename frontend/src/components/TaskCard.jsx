@@ -34,7 +34,7 @@ export default function TaskCard({ task, onEdit, onDelete }) {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+        <div className="flex items-center gap-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity shrink-0">
           <button
             onClick={() => onEdit(task)}
             className="p-1 text-zinc-500 hover:text-violet-400 transition-colors"
