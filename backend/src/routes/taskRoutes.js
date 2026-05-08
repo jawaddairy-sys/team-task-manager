@@ -19,87 +19,23 @@ import { isAuthenticated } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// ==============================================
-// Task Routes (All require authentication)
-// ==============================================
-
 // Apply authentication middleware to all routes in this router
 router.use(isAuthenticated);
 
-/**
- * @route   POST /api/tasks
- * @desc    Create a new task
- * @access  Private (user must be team member)
- * @body    { title, description, status, priority, due_date, assigned_to, team_id }
- * @returns { task, message }
- */
 router.post("/", validate(createTaskSchema), createTask);
 
-/**
- * @route   GET /api/tasks/my-tasks
- * @desc    Get all tasks assigned to current user
- * @access  Private
- * @query   { status, priority } - Optional filters
- * @returns { tasks[], count }
- */
 router.get("/my-tasks", getMyTasks);
 
-/**
- * @route   GET /api/tasks/team/:teamId
- * @desc    Get all tasks for a specific team
- * @access  Private (user must be team member)
- * @param   { teamId } - Team ID
- * @query   { assignee, status, priority } - Optional filters
- * @returns { tasks[], count, filters }
- */
 router.get("/team/:teamId", getTasksByTeam);
 
-/**
- * @route   GET /api/tasks/:id
- * @desc    Get a single task by ID
- * @access  Private (user must be team member)
- * @param   { id } - Task ID
- * @returns { task }
- */
 router.get("/:id", getTaskById);
 
-/**
- * @route   PUT /api/tasks/:id
- * @desc    Update a task (creator or team admin only)
- * @access  Private (task creator or team admin)
- * @param   { id } - Task ID
- * @body    { title, description, status, priority, due_date, assigned_to }
- * @returns { task, message }
- */
 router.put("/:id", validate(updateTaskSchema), updateTask);
 
-/**
- * @route   PATCH /api/tasks/:id/status
- * @desc    Update only task status (assigned users can update)
- * @access  Private (assigned user, creator, or team admin)
- * @param   { id } - Task ID
- * @body    { status }
- * @returns { task, message }
- */
 router.patch("/:id/status", validate(updateTaskStatusSchema), updateTaskStatus);
 
-/**
- * @route   DELETE /api/tasks/:id
- * @desc    Delete a task (creator or team admin only)
- * @access  Private (task creator or team admin)
- * @param   { id } - Task ID
- * @returns { message }
- */
 router.delete("/:id", deleteTask);
 
-// Optional: Bulk create tasks
-/**
- * @route   POST /api/tasks/bulk
- * @desc    Create multiple tasks at once
- * @access  Private (user must be team member)
- * @body    { tasks: [task1, task2, ...] }
- * @returns { tasks[], message }
- */
 router.post("/bulk", async (req, res) => {
   try {
     const { tasks } = req.body;
@@ -168,14 +104,6 @@ router.post("/bulk", async (req, res) => {
   }
 });
 
-// Optional: Get task statistics
-/**
- * @route   GET /api/tasks/team/:teamId/stats
- * @desc    Get task statistics for a team
- * @access  Private (user must be team member)
- * @param   { teamId } - Team ID
- * @returns { stats }
- */
 router.get("/team/:teamId/stats", async (req, res) => {
   try {
     const { pool } = await import("../config/db.js");
